@@ -36,30 +36,30 @@ If you enjoy chaotic systems, generative harmony, or building instruments that f
 
 ## Project Structure
 
-SonicFraczalator/
-│
-├── main.py                     # Entry point: render + write WAV + playback
-├── params.py                   # All tweakable instrument parameters
-│
-├── render_engine/
-│   ├── render_track.py         # Full track renderer (attractor → voices → mix)
-│   ├── mixdown.py              # Stereo summing + normalisation
-│
-├── voices/
-│   ├── voice_engine.py         # Per‑voice DSP loop + progress bars
-│   ├── oscillators.py          # Sine, square, etc.
-│   ├── timbre.py               # Timbre morphing engine
-│   ├── panning.py              # Stereo panning engine
-│
-├── harmony_engine/
-│   └── chord_engine.py         # Chord sequencing + per‑voice base frequencies
-│
-├── sonic_animation_engine/
-│   ├── chaos_noise.py          # Chaotic noise generator
-│   ├── phase_shift.py          # Optional per‑voice phase shifting
-│   └── attractors/             # Drop‑in chaos systems
-│
-└── requirements.txt            # Dependencies
+    SonicFraczalator/
+    │
+    ├── main.py                     # Entry point: render + write WAV + playback
+    ├── params.py                   # All tweakable instrument parameters
+    │
+    ├── render_engine/
+    │   ├── render_track.py         # Full track renderer (attractor → voices → mix)
+    │   ├── mixdown.py              # Stereo summing + normalisation
+    │
+    ├── voices/
+    │   ├── voice_engine.py         # Per‑voice DSP loop + progress bars
+    │   ├── oscillators.py          # Sine, square, etc.
+    │   ├── timbre.py               # Timbre morphing engine
+    │   ├── panning.py              # Stereo panning engine
+    │
+    ├── harmony_engine/
+    │   └── chord_engine.py         # Chord sequencing + per‑voice base frequencies
+    │
+    ├── sonic_animation_engine/
+    │   ├── chaos_noise.py          # Chaotic noise generator
+    │   ├── phase_shift.py          # Optional per‑voice phase shifting
+    │   └── attractors/             # Drop‑in chaos systems
+    │
+    └── requirements.txt            # Dependencies
 
 
 
