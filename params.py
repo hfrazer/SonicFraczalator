@@ -16,7 +16,7 @@ class VibeParams:
         # -------------------------------------------------------------------
         # ATTRACTOR ENGINE
         # -------------------------------------------------------------------
-        self.ATTRACTOR = "rossler"      # "rossler", "lorenz", "halvorsen", "aizawa", "thomas", etc.
+        self.ATTRACTOR = "lorenz"      # "rossler", "lorenz",  --Needs fixing: "halvorsen", "aizawa", "thomas", etc.
         self.BASE_DT = 0.01             # Base integration timestep
         self.CHAOS_GEARING = 1.0        # Speed multiplier for attractor
 

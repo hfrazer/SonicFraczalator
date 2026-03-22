@@ -2,6 +2,9 @@ from render_engine.render_track import TrackRenderer
 from attractors.rossler import RosslerAttractor
 from attractors.lorenz import LorenzAttractor
 from attractors.halvorsen import HalvorsenAttractor
+from attractors.aizawa import AizawaAttractor
+from attractors.thomas import ThomasAttractor
+from attractors.halvorsen import HalvorsenAttractor
 from harmony_engine.chord_engine import ChordEngine
 from params import VibeParams
 from render_engine.mixdown import Mixdown
@@ -17,6 +20,10 @@ def select_attractor(name, params):
         return LorenzAttractor(dt=dt)
     elif name == "halvorsen":
         return HalvorsenAttractor(dt=dt)
+    elif name == "aizawa":
+        return AizawaAttractor(dt=dt)
+    elif name == "thomas":
+        return ThomasAttractor(dt=dt)   
     else:
         raise ValueError(f"Unknown attractor: {name}")
 
