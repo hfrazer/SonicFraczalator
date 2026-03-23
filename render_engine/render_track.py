@@ -6,6 +6,7 @@ import numpy as np
 import time
 import sys
 
+import params
 from sonic_animation_engine.phase_shift import PhaseShift
 from sonic_animation_engine.chaos_noise import ChaosNoise
 from harmony_engine.chord_engine import ChordEngine
@@ -34,6 +35,23 @@ def progress_bar(stage, i, total, bar_length=30):
         sys.stdout.write("\n")
         sys.stdout.flush()
 
+def print_render_header(params):
+    print("SONICFRACZALATOR — full track render starting...")
+    print("")
+    print("=== CHAOS ENGINE ===")
+    print(f"Attractor:        {params.ATTRACTOR}")
+    print(f"Base dt:          {params.BASE_DT}")
+    print(f"Chaos gearing:    {params.CHAOS_GEARING}")
+    print(f"Effective dt:     {params.BASE_DT * params.CHAOS_GEARING:.6f}")
+    print("")
+    print("=== TRACK SETTINGS ===")
+    print(f"Track duration:   {params.TRACK_DUR_SECS} seconds")
+    print(f"Chord duration:   {params.CHORD_DUR_SECS} seconds")
+    print(f"Voices:           {params.VOICE_COUNT}")
+    print(f"Sample rate:      {params.SAMPLE_RATE}")
+    print("")
+    print("Render starting...\n")
+        
 
 class TrackRenderer:
     def __init__(self, params, attractor):
@@ -42,6 +60,7 @@ class TrackRenderer:
         self.sample_rate = params.SAMPLE_RATE
         self.output_path = params.WAV_OUTPUT_PATH
 
+ 
     # ----------------------------------------------------------
     # 1. Generate attractor trajectory
     # ----------------------------------------------------------
@@ -55,7 +74,15 @@ class TrackRenderer:
 
         for i in range(num_steps):
             state = self.attractor.step()
-            x, y, z = state["x"], state["y"], state["z"]
+            state = self.attractor.step()
+
+            # Handle both dict and array return types
+            if isinstance(state, dict):
+                x, y, z = state["x"], state["y"], state["z"]
+            else:
+                # Assume array-like: [x, y, z]
+                x, y, z = state[0], state[1], state[2]
+
             xs.append(x)
             ys.append(y)
             zs.append(z)

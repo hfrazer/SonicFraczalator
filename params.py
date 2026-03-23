@@ -16,10 +16,24 @@ class VibeParams:
         # -------------------------------------------------------------------
         # ATTRACTOR ENGINE
         # -------------------------------------------------------------------
-        self.ATTRACTOR = "lorenz"      # "rossler", "lorenz",  --Needs fixing: "halvorsen", "aizawa", "thomas", etc.
-        self.BASE_DT = 0.01             # Base integration timestep
-        self.CHAOS_GEARING = 1.0        # Speed multiplier for attractor
+        # --- Attractor selection ---
+        self.ATTRACTOR = "thomas"        # "rossler", "lorenz",  --Needs fixing: "halvorsen", "aizawa", "thomas", etc.
+        # --- Global chaos controls ---
+        self.BASE_DT = 0.01                 # Base integration timestep
+        self.CHAOS_GEARING = 1.3            # Speed multiplier for attractor
+        # --- Seed for chaos / randomness ---
+        import time
+        self.SEED = int(time.time() * 1000) # Unique seed per render
 
+        # --- Attractor-specific presets ---
+        self.ATTRACTOR_PRESETS = {
+            "lorenz":    {"dt": 0.01,  "scale": 1.0, "init": (0.1, 0.0, 0.0)},
+            "rossler":   {"dt": 0.005, "scale": 1.0, "init": (0.1, 0.1, 0.1)},
+            "halvorsen": {"dt": 0.001, "scale": 0.5, "init": (0.1, 0.0, 0.0)},
+            "aizawa":    {"dt": 0.002, "scale": 0.3, "init": (0.1, 0.0, 0.0)},
+            "thomas":    {"dt": 0.001,  "scale": 300.0, "init": (1.0, 1.0, 1.0)},
+            # "thomas":    {"dt": 0.01,  "scale": 0.7, "init": (0.1, 0.1, 0.1)},  This one is too dampened 
+        }
         # Optional attractor scaling/offsets
         self.CHAOS_SCALE_X = 1.0
         self.CHAOS_SCALE_Y = 1.0
@@ -57,7 +71,7 @@ class VibeParams:
             [49.00, 98.00, 130.81, 146.83, 261.63],
             [49.00, 98.00, 123.47, 146.83, 246.94],
         ]
-        self.CHORD_DUR_SECS = 6.0       # Legacy default
+        self.CHORD_DUR_SECS = 5.0       # Legacy default
         self.VOICE_COUNT = 5            # Number of voices per chord
         self.DROP2 = False              # Drop‑2 voicing
 

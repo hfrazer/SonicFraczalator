@@ -14,7 +14,7 @@ class ThomasAttractor:
 
     def step(self):
         x, y, z = self.x, self.y, self.z
-
+        
         dx = np.sin(y) - self.b * x
         dy = np.sin(z) - self.b * y
         dz = np.sin(x) - self.b * z

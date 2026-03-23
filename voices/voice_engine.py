@@ -9,6 +9,9 @@ import sys
 from voices.oscillators import PhaseAccumulator, Oscillators
 from voices.timbre import TimbreEngine
 from voices.panning import PanningEngine
+from sonic_animation_engine.micro_instability import MicroInstability
+from sonic_animation_engine.groove_engine import GrooveEngine
+from sonic_animation_engine.behaviour_engine import BehaviourEngine
 
 
 def progress_bar(stage, i, total, bar_length=30):
@@ -37,6 +40,11 @@ class VoiceEngine:
     def __init__(self, sample_rate, params):
         self.sample_rate = sample_rate
         self.params = params
+        self.micro = MicroInstability(params)
+        self.groove = GrooveEngine(params)
+        self.behaviour = BehaviourEngine(params)   # <-- Placeholder for future behaviour engine integration
+
+
 
         # Sub‑engines
         self.timbre_engine = TimbreEngine(depth=params.TIMBRE_DEPTH)
@@ -65,15 +73,63 @@ class VoiceEngine:
         for i in range(num_samples):
 
             # --- 1. Base frequency from chord engine ---
+            
+            # --- Groove Emergence: timing offset ---
+            if self.params.GROOVE_ON:
+                groove_state = {"time_offset": 0.0}
+                groove_state = self.groove.apply(groove_state, i / self.sample_rate)
+                t_offset = groove_state["time_offset"]
+            else:
+                t_offset = 0.0
+            # Apply timing offset to attractor lanes
+            j = int(i + t_offset * self.sample_rate)
+
+            # Clamp to valid range
+            j = max(0, min(j, len(Xi) - 1))
+
+            Xi_g = Xi[j]
+            Yi_g = Yi[j]
+            Zi_g = Zi[j]
+
             base_freq = chord_engine.get_base_freq(i, voice_index)
 
             # --- 2. Chaotic detune (legacy behaviour) ---
-            cents = (Xi[i] * 2 - 1) * self.params.DETUNE_CENTS
+            cents = (Xi_g * 2 - 1) * self.params.DETUNE_CENTS
+
 
             if self.params.ENABLE_PITCH_NOISE:
                 cents += (chaos_noise[i] * 2 - 1) * self.params.PITCH_NOISE_CENTS
 
             freq = base_freq * (2.0 ** (cents / 1200.0))
+            # --- Micro-instability state (pitch excluded) ---
+            voice_state = {
+                "timbre": Yi[i],
+                "amp": Zi[i],
+                "pan_x": Xi[i],
+                "pan_y": Yi[i],
+            }
+
+            # Apply micro-instability drift
+            if self.params.MICRO_INSTABILITY_ON:
+                voice_state = self.micro.apply(voice_state, i / self.sample_rate)
+            # --- Behaviour Modulation ---
+            behaviour_state = {
+                "brightness": voice_state["timbre"],
+                "amp_shape": voice_state["amp"],
+                "chaos_depth": 0.0,
+            }
+
+            behaviour_state = self.behaviour.apply(
+                behaviour_state,
+                Yi_g,  # attractor lane after groove
+                Zi_g
+            )
+
+            # Update voice_state with behaviour-modulated values
+            voice_state["timbre"] = behaviour_state["brightness"]
+            voice_state["amp"] = behaviour_state["amp_shape"]
+
+
 
             # --- 3. Oscillators ---
             p = phase.advance(freq)
@@ -82,7 +138,7 @@ class VoiceEngine:
 
             # --- 4. Timbre morphing ---
             if self.params.ENABLE_TIMBRE:
-                sample = self.timbre_engine.apply(sine, square, Yi[i])
+                sample = self.timbre_engine.apply(sine, square, voice_state["timbre"])    # <-- THIS LINE
             else:
                 sample = sine
 
@@ -99,7 +155,8 @@ class VoiceEngine:
 
             # --- 6. Stereo panning ---
             if self.params.ENABLE_PAN:
-                L, R = self.panning_engine.apply(sample, Xi[i], Yi[i])
+                L, R = self.panning_engine.apply(sample, Xi_g, Yi_g)
+
             else:
                 L = R = sample * 0.5
 
