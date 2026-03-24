@@ -156,6 +156,32 @@ Perfect for sound design, ambient music, or algorithmic composition.
 ## License
 
 MIT License — feel free to fork, remix, and build on it.
+---
+
+## Multiprocessing Architecture
+
+SonicFraczalator uses Python's multiprocessing to accelerate rendering by splitting the audio into horizontal time chunks. Each chunk covers all voices for a short time interval (default: 5 seconds), maximizing CPU utilization and trying to keep progress reporting as responsive as possible.
+
+- **Time Chunking:** The audio is divided into small, fixed-duration chunks (see `CHUNK_SIZE_SECONDS` in `params.py`). Each chunk is processed independently across all voices.
+- **Stateless Workers:** Each worker process receives all the data it needs for its chunk, ensuring no shared state or race conditions.
+- **Progress Reporting:** As each chunk completes, the main process receives a callback and updates at these intervals a 'smooth-as-possible', progress bar with ETA. Output from worker processes is suppressed to keep the progress bar clean.
+- **Stages:** Progress bars are shown for attractor generation and for voice rendering, giving clear feedback on long renders.
+
+This architecture ensures efficient parallelism, accurate progress feedback, and efficient and robust handling of large renders on multi-core systems.
+
+---
+
+## Troubleshooting
+
+- If you do not see progress bars for attractor or voice rendering, ensure you are running the latest code. A bug in the progress bar logic was fixed in March 2026.
+- All progress bars now update smoothly with progressively more accurate ETA. No configuration is needed.
+- Output from worker processes is suppressed to prevent interference with the main progress bar.
+
+## Changelog
+
+- **2026-03:** Fixed progress bar logic so all bars (attractor, rendering voices) update correctly and smoothly.
+- Suppressed all print statements from multiprocessing workers for clean output.
+- Removed temporary test progress bar code from production.
 
 ---
 

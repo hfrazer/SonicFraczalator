@@ -17,10 +17,10 @@ class VibeParams:
         # ATTRACTOR ENGINE
         # -------------------------------------------------------------------
         # --- Attractor selection ---
-        self.ATTRACTOR = "thomas"        # "rossler", "lorenz",  --Needs fixing: "halvorsen", "aizawa", "thomas", etc.
+        self.ATTRACTOR = "aizawa"        # "rossler", "lorenz", "halvorsen", "aizawa", "thomas", etc.
         # --- Global chaos controls ---
         self.BASE_DT = 0.01                 # Base integration timestep
-        self.CHAOS_GEARING = 1.3            # Speed multiplier for attractor
+        self.CHAOS_GEARING = 1.1            # Speed multiplier for attractor
         # --- Seed for chaos / randomness ---
         import time
         self.SEED = int(time.time() * 1000) # Unique seed per render
@@ -46,7 +46,12 @@ class VibeParams:
         # AUDIO ENGINE
         # -------------------------------------------------------------------
         self.SAMPLE_RATE = 44100        # Hz
-        self.TRACK_DUR_SECS = 10        # Total render duration
+        self.TRACK_DUR_SECS = 40        # Total render duration
+
+        # -------------------------------------------------------------------
+        # MULTIPROCESSING CHUNKING
+        # -------------------------------------------------------------------
+        self.CHUNK_SIZE_SECONDS = 5     # Duration of each processing chunk (seconds)
 
         # -------------------------------------------------------------------
         # OUTPUT
@@ -71,7 +76,7 @@ class VibeParams:
             [49.00, 98.00, 130.81, 146.83, 261.63],
             [49.00, 98.00, 123.47, 146.83, 246.94],
         ]
-        self.CHORD_DUR_SECS = 5.0       # Legacy default
+        self.CHORD_DUR_SECS = 6.0       # Legacy default
         self.VOICE_COUNT = 5            # Number of voices per chord
         self.DROP2 = False              # Drop‑2 voicing
 
